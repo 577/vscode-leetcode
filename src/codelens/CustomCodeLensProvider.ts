@@ -38,8 +38,8 @@ export class CustomCodeLensProvider implements vscode.CodeLensProvider {
         let codeLensLine: number = document.lineCount - 1;
         for (let i: number = document.lineCount - 1; i >= 0; i--) {
             const lineContent: string = document.lineAt(i).text;
-            if (lineContent.indexOf("@lc code=end") >= 0) {
-                codeLensLine = i;
+            if (lineContent.indexOf("@lc code=start") >= 0) {
+                codeLensLine = i + 1;
                 break;
             }
         }
@@ -47,18 +47,18 @@ export class CustomCodeLensProvider implements vscode.CodeLensProvider {
         const range: vscode.Range = new vscode.Range(codeLensLine, 0, codeLensLine, 0);
         const codeLens: vscode.CodeLens[] = [];
 
-        if (shortcuts.indexOf("submit") >= 0) {
+        if (shortcuts.indexOf("test") >= 0) {
             codeLens.push(new vscode.CodeLens(range, {
-                title: "Submit",
-                command: "leetcode.submitSolution",
+                title: "Run",
+                command: "leetcode.testSolution",
                 arguments: [document.uri],
             }));
         }
 
-        if (shortcuts.indexOf("test") >= 0) {
+        if (shortcuts.indexOf("submit") >= 0) {
             codeLens.push(new vscode.CodeLens(range, {
-                title: "Test",
-                command: "leetcode.testSolution",
+                title: "Submit",
+                command: "leetcode.submitSolution",
                 arguments: [document.uri],
             }));
         }
@@ -81,7 +81,7 @@ export class CustomCodeLensProvider implements vscode.CodeLensProvider {
 
         if (shortcuts.indexOf("description") >= 0) {
             codeLens.push(new vscode.CodeLens(range, {
-                title: "Description",
+                title: "Problem",
                 command: "leetcode.previewProblem",
                 arguments: [document.uri],
             }));

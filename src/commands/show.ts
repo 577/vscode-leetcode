@@ -259,7 +259,7 @@ async function resolveRelativePath(relativePath: string, node: IProblem, selecte
         const placeholder: string = args[0].toLowerCase().trim();
         switch (placeholder) {
             case "id":
-                return node.id;
+                return node.id.padStart(4, "0");
             case "name":
                 return node.name;
             case "camelcasename":
