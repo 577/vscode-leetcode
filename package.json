@@ -2,7 +2,7 @@
     "name": "vscode-leetcode",
     "displayName": "LeetCode",
     "description": "Solve LeetCode problems in VS Code",
-    "version": "0.18.4",
+    "version": "0.18.5",
     "author": "LeetCode",
     "publisher": "LeetCode",
     "license": "MIT",
@@ -156,21 +156,16 @@
             "leetcode": [
                 {
                     "id": "leetCodeExplorer",
-                    "name": "Problems"
+                    "name": ""
                 }
             ]
         },
         "menus": {
             "view/title": [
                 {
-                    "command": "leetcode.toggleLeetCodeCn",
-                    "when": "view == leetCodeExplorer",
-                    "group": "navigation@0"
-                },
-                {
                     "command": "leetcode.signin",
                     "when": "view == leetCodeExplorer",
-                    "group": "navigation@1"
+                    "group": "overflow@0"
                 },
                 {
                     "command": "leetcode.searchProblem",
@@ -186,16 +181,6 @@
                     "command": "leetcode.signout",
                     "when": "view == leetCodeExplorer",
                     "group": "overflow@1"
-                },
-                {
-                    "command": "leetcode.pickOne",
-                    "when": "view == leetCodeExplorer",
-                    "group": "overflow@2"
-                },
-                {
-                    "command": "leetcode.problems.sort",
-                    "when": "view == leetCodeExplorer",
-                    "group": "overflow@3"
                 }
             ],
             "view/item/context": [
@@ -325,7 +310,7 @@
                     },
                     "leetcode.showDescription": {
                         "type": "string",
-                        "default": "In Webview",
+                        "default": "None",
                         "enum": [
                             "In Webview",
                             "In File Comment",
@@ -348,25 +333,25 @@
                     },
                     "leetcode.hint.setDefaultLanguage": {
                         "type": "boolean",
-                        "default": true,
+                        "default": false,
                         "scope": "application",
                         "description": "Show a hint to set the default language."
                     },
                     "leetcode.hint.configWebviewMarkdown": {
                         "type": "boolean",
-                        "default": true,
+                        "default": false,
                         "scope": "application",
                         "description": "Show a hint to change webview appearance through markdown config."
                     },
                     "leetcode.hint.commentDescription": {
                         "type": "boolean",
-                        "default": true,
+                        "default": false,
                         "scope": "application",
                         "description": "Show a hint to enable comment description in solution code file."
                     },
                     "leetcode.hint.commandShortcut": {
                         "type": "boolean",
-                        "default": true,
+                        "default": false,
                         "scope": "application",
                         "description": "Show a hint to configure commands key binding."
                     },
@@ -648,8 +633,9 @@
                     "leetcode.editor.shortcuts": {
                         "type": "array",
                         "default": [
+                            "test",
                             "submit",
-                            "test"
+                            "description"
                         ],
                         "scope": "application",
                         "items": {
@@ -702,7 +688,7 @@
                     },
                     "leetcode.allowReportData": {
                         "type": "boolean",
-                        "default": true,
+                        "default": false,
                         "scope": "application",
                         "description": "Allow LeetCode to report anonymous usage data to improve the product."
                     }
@@ -715,7 +701,7 @@
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
         "lint": "tslint --project tsconfig.json -e src/*.d.ts -t verbose",
-        "build": "vsce package",
+        "build": "bash build.sh",
         "vs-publish": "vsce publish"
     },
     "devDependencies": {

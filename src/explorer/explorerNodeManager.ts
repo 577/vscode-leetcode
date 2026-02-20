@@ -38,10 +38,6 @@ class ExplorerNodeManager implements Disposable {
                 name: Category.All,
             }), false),
             new LeetCodeNode(Object.assign({}, defaultProblem, {
-                id: Category.Difficulty,
-                name: Category.Difficulty,
-            }), false),
-            new LeetCodeNode(Object.assign({}, defaultProblem, {
                 id: Category.Tag,
                 name: Category.Tag,
             }), false),

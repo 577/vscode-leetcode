@@ -108,10 +108,14 @@ class LeetCodeExecutor implements Disposable {
             cmd.push("-T"); // use -T to force English version
         }
 
-        if (!await fse.pathExists(filePath)) {
+        if (true) {
             await fse.createFile(filePath);
             const codeTemplate: string = await this.executeCommandWithProgressEx("Fetching problem data...", this.nodeExecutable, cmd);
-            await fse.writeFile(filePath, codeTemplate);
+            await fse.writeFile(filePath, codeTemplate
+                .replace(/\/\*\*[\s\S]*?Definition for[\s\S]*?\*\/\s*\n?/g, "")
+                .replace(/\n+([^\n]*@lc code=start)\n+/, "\n\n$1\n\n")
+                .replace(/\n+([^\n]*@lc code=end)\s*$/, "\n\n$1\n")
+                .replace(/public class Solution/g, "class Solution"));
         }
     }
 

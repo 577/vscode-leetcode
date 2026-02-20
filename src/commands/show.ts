@@ -48,7 +48,7 @@ export async function previewProblem(input: IProblem | vscode.Uri, isSideMode: b
         }
         node = cachedNode;
         // Move the preview page aside if it's triggered from Code Lens
-        isSideMode = true;
+        isSideMode = false;
     } else {
         node = input;
         const { isPremium } = globalState.getUserStatus() ?? {};
@@ -259,7 +259,7 @@ async function resolveRelativePath(relativePath: string, node: IProblem, selecte
         const placeholder: string = args[0].toLowerCase().trim();
         switch (placeholder) {
             case "id":
-                return node.id;
+                return node.id.padStart(4, "0");
             case "name":
                 return node.name;
             case "camelcasename":

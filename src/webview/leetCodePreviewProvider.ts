@@ -27,7 +27,7 @@ class LeetCodePreviewProvider extends LeetCodeWebview {
     protected getWebviewOption(): ILeetCodeWebviewOption {
         if (!this.sideMode) {
             return {
-                title: `${this.node.name}: Preview`,
+                title: `${this.node.id}. ${this.node.name}`,
                 viewColumn: ViewColumn.One,
             };
         } else {
@@ -100,13 +100,9 @@ class LeetCodePreviewProvider extends LeetCodeWebview {
             </head>
             <body>
                 ${head}
-                ${info}
-                ${tags}
-                ${companies}
+                <br>
                 ${body}
-                <hr />
-                ${links}
-                ${!this.sideMode ? button.element : ""}
+                <br><br>
                 <script>
                     const vscode = acquireVsCodeApi();
                     ${!this.sideMode ? button.script : ""}
