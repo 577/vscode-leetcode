@@ -108,10 +108,24 @@ class LeetCodeExecutor implements Disposable {
             cmd.push("-T"); // use -T to force English version
         }
 
-        if (!await fse.pathExists(filePath)) {
+        if (true) {
             await fse.createFile(filePath);
             const codeTemplate: string = await this.executeCommandWithProgressEx("Fetching problem data...", this.nodeExecutable, cmd);
-            await fse.writeFile(filePath, codeTemplate);
+            let formattedCodeTemplate: string = codeTemplate
+                .replace(/\/\*\*[\s\S]*?Definition for[\s\S]*?\*\/\s*\n?/g, "")
+                .replace(/\n+([^\n]*@lc code=start)\n+/, "\n\n$1\n\n")
+                .replace(/\n+([^\n]*@lc code=end)\s*$/, "\n\n$1\n");
+            if (language === "java") {
+                formattedCodeTemplate = formattedCodeTemplate.replace(/public class Solution/g, "class Solution");
+            }
+            if (language === "python3") {
+                formattedCodeTemplate = formattedCodeTemplate
+                    .replace(/\bSet(?=\s*\[)/g, "set")
+                    .replace(/\bList(?=\s*\[)/g, "list")
+                    .replace(/\bDict(?=\s*\[)/g, "dict")
+                    .replace(/\bTuple(?=\s*\[)/g, "tuple");
+            }
+            await fse.writeFile(filePath, formattedCodeTemplate);
         }
     }
 
@@ -222,22 +236,41 @@ class LeetCodeExecutor implements Disposable {
         return extensionConfig.get<string>("nodePath", "node" /* default value */);
     }
 
+    public getLeetCodeCliHome(): string {
+        return process.env.VSC_LEETCODE_HOME || os.homedir();
+    }
+
+    private getCommandOptions(options: cp.SpawnOptions = { shell: true }): cp.SpawnOptions {
+        const cliHome: string = this.getLeetCodeCliHome();
+        return {
+            ...options,
+            env: {
+                ...process.env,
+                ...options.env,
+                HOME: cliHome,
+                USERPROFILE: cliHome,
+            },
+        };
+    }
+
     private async executeCommandEx(command: string, args: string[], options: cp.SpawnOptions = { shell: true }): Promise<string> {
+        const commandOptions: cp.SpawnOptions = this.getCommandOptions(options);
         if (wsl.useWsl()) {
-            return await executeCommand("wsl", [command].concat(args), options);
+            return await executeCommand("wsl", [command].concat(args), commandOptions);
         }
-        return await executeCommand(command, args, options);
+        return await executeCommand(command, args, commandOptions);
     }
 
     private async executeCommandWithProgressEx(message: string, command: string, args: string[], options: cp.SpawnOptions = { shell: true }): Promise<string> {
+        const commandOptions: cp.SpawnOptions = this.getCommandOptions(options);
         if (wsl.useWsl()) {
-            return await executeCommandWithProgress(message, "wsl", [command].concat(args), options);
+            return await executeCommandWithProgress(message, "wsl", [command].concat(args), commandOptions);
         }
-        return await executeCommandWithProgress(message, command, args, options);
+        return await executeCommandWithProgress(message, command, args, commandOptions);
     }
 
     private async removeOldCache(): Promise<void> {
-        const oldPath: string = path.join(os.homedir(), ".lc");
+        const oldPath: string = path.join(this.getLeetCodeCliHome(), ".lc");
         if (await fse.pathExists(oldPath)) {
             await fse.remove(oldPath);
         }

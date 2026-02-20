@@ -13,7 +13,7 @@ export async function executeCommand(command: string, args: string[], options: c
     return new Promise((resolve: (res: string) => void, reject: (e: Error) => void): void => {
         let result: string = "";
 
-        const childProc: cp.ChildProcess = cp.spawn(command, args, { ...options, env: createEnvOption() });
+        const childProc: cp.ChildProcess = cp.spawn(command, args, { ...options, env: { ...createEnvOption(), ...options.env } });
 
         childProc.stdout?.on("data", (data: string | Buffer) => {
             data = data.toString();
@@ -58,12 +58,11 @@ export async function executeCommandWithProgress(message: string, command: strin
 // clone process.env and add http proxy
 export function createEnvOption(): {} {
     const proxy: string | undefined = getHttpAgent();
+    const env: any = { ...process.env };
     if (proxy) {
-        const env: any = Object.create(process.env);
         env.http_proxy = proxy;
-        return env;
     }
-    return process.env;
+    return env;
 }
 
 function getHttpAgent(): string | undefined {

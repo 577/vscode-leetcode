@@ -166,14 +166,16 @@ class LeetCodeManager extends EventEmitter {
     public setCookieToCli(cookie: string, name: string): Promise<void> {
         return new Promise(async (resolve: (res: void) => void, reject: (e: Error) => void) => {
             const leetCodeBinaryPath: string = await leetCodeExecutor.getLeetCodeBinaryPath();
+            const cliHome: string = leetCodeExecutor.getLeetCodeCliHome();
 
             const childProc: cp.ChildProcess = wsl.useWsl()
                 ? cp.spawn("wsl", [leetCodeExecutor.node, leetCodeBinaryPath, "user", loginArgsMapping.get("Cookie") ?? ""], {
                       shell: true,
+                      env: { ...createEnvOption(), HOME: cliHome, USERPROFILE: cliHome },
                   })
                 : cp.spawn(leetCodeExecutor.node, [leetCodeBinaryPath, "user", loginArgsMapping.get("Cookie") ?? ""], {
                       shell: true,
-                      env: createEnvOption(),
+                      env: { ...createEnvOption(), HOME: cliHome, USERPROFILE: cliHome },
                   });
 
             childProc.stdout?.on("data", async (data: string | Buffer) => {
